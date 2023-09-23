@@ -7,7 +7,7 @@ spring:
     host: smtp.163.com
   kafka:
     bootstrap-servers: 192.168.3.18:9092
-#    consumer:
-#      group-id: my-group
+    consumer:
+      group-id: my-group
 server:
   port: 9101

@@ -1,6 +1,6 @@
 package com.oc.kafka.controller;
 
-import com.oc.kafka.service.KafkaProducerService;
+import com.oc.kafka.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class KafkaController {
 
     @Autowired
-    private KafkaProducerService producerService;
+    private KafkaService producerService;
 
     @GetMapping("/send")
     public String sendMessage() {
