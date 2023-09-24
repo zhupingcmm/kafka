@@ -6,10 +6,10 @@ spring:
     password: LAUJOQUOFNXKXJQT
     host: smtp.163.com
   kafka:
-    bootstrap-servers: 192.168.3.18:9092
+    bootstrap-servers: 192.168.3.19:9092
     admin:
       properties:
-        bootstrap-servers: 192.168.3.18:9092
+        bootstrap-servers: 192.168.3.19:9092
         client.id: admin-client
       topic.metadata.refresh.interval.ms: 5000
       topic.metadata.max.age.ms: 15000

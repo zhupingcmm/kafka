@@ -3,11 +3,9 @@ package com.oc.kafka.service.impl;
 import com.oc.kafka.service.KafkaService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.ListTopicsOptions;
-import org.apache.kafka.clients.admin.ListTopicsResult;
-import org.apache.kafka.clients.admin.TopicListing;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaAdmin;
@@ -19,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Author: pzhu
@@ -59,6 +58,53 @@ public class KafkaServiceImpl implements KafkaService {
            return topicListings.stream().map(TopicListing::name).collect(Collectors.toList());
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void createTopic(List<String> names) {
+        AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties());
+        List<NewTopic> newTopics = names.stream()
+                .map(name -> {
+                    short rs = 1;
+                    return new NewTopic(name, 1, rs);
+                }).collect(Collectors.toList());
+        adminClient.createTopics(newTopics);
+        adminClient.close();
+    }
+
+    @Override
+    public void deleteTopic(List<String> names) {
+        AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties());
+        adminClient.deleteTopics(names);
+        adminClient.close();
+    }
+
+    @Override
+    public void describeTopic(List<String> names) {
+
+        try {
+            AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties());
+            DescribeTopicsResult describeTopicsResult = adminClient.describeTopics(names);
+            describeTopicsResult.allTopicIds().get().values().stream().forEach(System.out::println);
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    @Override
+    public void describeConfig(List<String> names) {
+        try {
+            AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties());
+            List<ConfigResource> configResources = names.stream().map(name -> new ConfigResource(ConfigResource.Type.TOPIC, name)).collect(Collectors.toList());
+
+            DescribeConfigsResult describeConfigsResult = adminClient.describeConfigs(configResources);
+            describeConfigsResult.all().get().values().forEach(System.out::println);
+
+        } catch (Exception e) {
+
         }
     }
 

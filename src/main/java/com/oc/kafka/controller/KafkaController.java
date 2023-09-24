@@ -2,8 +2,7 @@ package com.oc.kafka.controller;
 
 import com.oc.kafka.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,9 +16,9 @@ public class KafkaController {
     @Autowired
     private KafkaService kafkaService;
 
-    @GetMapping("/send")
-    public String sendMessage() {
-        kafkaService.sendMessage("zp", "hello");
+    @PostMapping("/message")
+    public String sendMessage(@RequestParam String topic, @RequestParam String message) {
+        kafkaService.sendMessage(topic, message);
         return "message send";
     }
 
@@ -27,4 +26,26 @@ public class KafkaController {
     public List<String> getAllTopics() {
         return kafkaService.getAllTopics();
     }
+
+    @PostMapping("/topics")
+    public void createTopics(@RequestBody List<String> names) {
+        kafkaService.createTopic(names);
+    }
+    @PostMapping("/topics/describe")
+    public void describeTopic (@RequestBody List<String> names) {
+        kafkaService.describeTopic(names);
+    }
+
+    @PostMapping("/config/describe")
+    public void describeConfig (@RequestBody List<String> names) {
+        kafkaService.describeConfig(names);
+    }
+
+
+    @DeleteMapping("/topics")
+    public void deleteTopic (@RequestBody List<String> names) {
+        kafkaService.deleteTopic(names);
+    }
+
+
 }

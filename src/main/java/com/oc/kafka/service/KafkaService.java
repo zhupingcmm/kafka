@@ -14,4 +14,13 @@ public interface KafkaService {
     void listen(String message);
 
     List<String> getAllTopics();
+
+    void createTopic(List<String> names);
+
+
+    void deleteTopic(List<String> names);
+
+    void describeTopic(List<String> names);
+
+    void describeConfig(List<String> names);
 }
