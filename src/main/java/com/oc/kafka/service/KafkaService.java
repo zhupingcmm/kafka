@@ -23,4 +23,7 @@ public interface KafkaService {
     void describeTopic(List<String> names);
 
     void describeConfig(List<String> names);
+
+
+    void increasePartitions(String topic, int partitionNumber);
 }

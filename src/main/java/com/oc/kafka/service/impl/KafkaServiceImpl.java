@@ -4,17 +4,22 @@ import com.oc.kafka.service.KafkaService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,7 +40,37 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void sendMessage(String topic, String message) {
-        kafkaTemplate.send(topic, message);
+//        Properties properties = new Properties();
+//        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+//        properties.put(ProducerConfig.RETRIES_CONFIG, "0");
+//        properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "16384");
+//        properties.put(ProducerConfig.LINGER_MS_CONFIG, "1");
+//        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "33554432");
+
+//
+//        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, message);
+//        kafkaTemplate.send(producerRecord);
+
+        try {
+            ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(topic, message);
+            send.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                @Override
+                public void onFailure(Throwable ex) {
+                    log.error(ex.toString());
+
+                }
+
+                @Override
+                public void onSuccess(SendResult<String, String> result) {
+                    RecordMetadata recordMetadata = result.getRecordMetadata();
+                    log.info("Partition: {}, offset {}", recordMetadata.partition(), recordMetadata.offset());
+                }
+            });
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -102,6 +137,20 @@ public class KafkaServiceImpl implements KafkaService {
 
             DescribeConfigsResult describeConfigsResult = adminClient.describeConfigs(configResources);
             describeConfigsResult.all().get().values().forEach(System.out::println);
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    public void increasePartitions(String topic, int partitionNumber) {
+        try {
+            AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties());
+            Map<String, NewPartitions> partitionsMap = new ConcurrentHashMap<>();
+            NewPartitions newPartitions = NewPartitions.increaseTo(partitionNumber);
+            partitionsMap.put(topic, newPartitions);
+            adminClient.createPartitions(partitionsMap);
 
         } catch (Exception e) {
 

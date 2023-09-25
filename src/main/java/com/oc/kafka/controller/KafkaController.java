@@ -47,5 +47,10 @@ public class KafkaController {
         kafkaService.deleteTopic(names);
     }
 
+    @PostMapping("/partition")
+    public void increasePartitions (@RequestParam String topic, @RequestParam(value = "") Integer partitions) {
+        kafkaService.increasePartitions(topic, partitions);
+    }
+
 
 }
