@@ -35,7 +35,6 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
     @Override
     public void templateReported(JSONObject reportInfo) {
         log.info("template Reported: [{}]", reportInfo);
-        
 
     }
 
@@ -44,7 +43,7 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
 //        if (webchatTemplateProperties.getTemplateResultType() == 0) {
 //            return FileUtils.
 //        }
-
+        
         return null;
     }
 }
