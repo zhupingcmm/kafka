@@ -43,7 +43,6 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
 //        if (webchatTemplateProperties.getTemplateResultType() == 0) {
 //            return FileUtils.
 //        }
-        
         return null;
     }
 }
