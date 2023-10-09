@@ -25,7 +25,6 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
 
     @Override
     public WechatTemplate getWechatTemplate() {
-        //c
 
         List<WechatTemplate> templates = webchatTemplateProperties.getTemplates();
         Optional<WechatTemplate> wechatTemplate = templates.stream().filter(WechatTemplate::isActive).findFirst();
@@ -36,7 +35,7 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
     @Override
     public void templateReported(JSONObject reportInfo) {
         log.info("template Reported: [{}]", reportInfo);
-
+        
 
     }
 
