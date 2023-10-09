@@ -26,7 +26,6 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
     @Override
     public WechatTemplate getWechatTemplate() {
         //c
-        //d
 
         List<WechatTemplate> templates = webchatTemplateProperties.getTemplates();
         Optional<WechatTemplate> wechatTemplate = templates.stream().filter(WechatTemplate::isActive).findFirst();
