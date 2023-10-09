@@ -19,3 +19,8 @@ spring:
       group-id: my-group
 server:
   port: 9101
+template:
+  templates:
+    - {"templateId": "1", "templateFilePath": "D:/code/java/kafka/src/main/resources/templates/template.json", "active": true}
+  template-result-type: 0
+  template-result-file-path:

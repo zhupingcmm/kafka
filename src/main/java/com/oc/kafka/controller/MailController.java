@@ -2,7 +2,6 @@ package com.oc.kafka.controller;
 
 import com.oc.kafka.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,8 +29,10 @@ public class MailController {
 //        simpleMailMessage.setTo("591679403@qq.com");
 //        emailService.sendMessage(simpleMailMessage);
 
+
         Map<String, Object> params = new HashMap<>();
         params.put("username", "Tom");
+        params.put("password", "NA");
         emailService.senTemplateMail("test", params);
     }
 }
