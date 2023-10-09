@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.oc.kafka.wechat.config.WebchatTemplateProperties;
 import com.oc.kafka.wechat.config.WechatTemplate;
 import com.oc.kafka.wechat.service.WechatTemplateService;
+import com.oc.kafka.wechat.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +25,10 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
 
     @Override
     public WechatTemplate getWechatTemplate() {
-
         List<WechatTemplate> templates = webchatTemplateProperties.getTemplates();
-        Optional<WechatTemplate> wechatTemplate = templates.stream().filter(WechatTemplate::isActive).findFirst();
+
+        Optional<WechatTemplate> wechatTemplate
+                = templates.stream().filter(WechatTemplate::isActive).findFirst();
 
         return wechatTemplate.orElse(null);
     }
@@ -40,9 +41,12 @@ public class WechatTemplateServiceImpl implements WechatTemplateService {
 
     @Override
     public JSONObject templateStatistics(String templateId) {
-//        if (webchatTemplateProperties.getTemplateResultType() == 0) {
-//            return FileUtils.
-//        }
+        // 判断数据结果获取类型
+        if(webchatTemplateProperties.getTemplateResultType() == 0){ // 文件获取
+            return FileUtils.readFile2JsonObject(webchatTemplateProperties.getTemplateResultFilePath()).get();
+        }else{
+            // DB ..
+        }
         return null;
     }
 }
